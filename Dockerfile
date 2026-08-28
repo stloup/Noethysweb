@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Installation groupée et figée de TOUTES les extensions nécessaires à Noethysweb
+# Installation complète et figée de TOUTES les extensions requises par Noethysweb
 RUN pip install --no-cache-dir \
     "django>=3.2,<4.0" \
     "django-autocomplete-light==3.9.4" \
@@ -29,6 +29,10 @@ RUN pip install --no-cache-dir \
     "django-anymail>=8.0" \
     "django-formtools>=2.3" \
     "django-axes>=5.0,<6.0" \
+    "django-simple-captcha>=0.5.17" \
+    "django-bootstrap4>=22.3" \
+    "django-mathfilters>=1.0.0" \
+    "requests>=2.28.0" \
     "pillow>=10.0.0" \
     "psycopg2-binary>=2.9.3" \
     "gunicorn>=21.2.0"
