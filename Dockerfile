@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Installation groupée et figée de TOUTES les extensions nécessaires
+# Installation groupée et figée de TOUTES les extensions nécessaires à Noethysweb
 RUN pip install --no-cache-dir \
     "django>=3.2,<4.0" \
     "django-autocomplete-light==3.9.4" \
@@ -23,6 +23,9 @@ RUN pip install --no-cache-dir \
     "django-q2>=1.6.2" \
     "django-datatable-view-compat==0.8.7" \
     "django-select2>=7.10.0" \
+    "django-summernote>=0.8.20.0" \
+    "django-colors-picker>=1.0" \
+    "django-js-asset>=2.0" \
     "pillow>=10.0.0" \
     "psycopg2-binary>=2.9.3" \
     "gunicorn>=21.2.0"
