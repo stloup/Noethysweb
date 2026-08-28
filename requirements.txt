@@ -5,7 +5,8 @@ django-debug-toolbar==3.8.1
 django-extensions==3.2.1
 django-import-export==2.9.0
 django-q2==1.6.2
+django-datatable-view==0.9.0
+django-select2==7.11.1
 pillow==10.2.0
 psycopg2-binary==2.9.9
 gunicorn==21.2.0
-django-datatable-view
