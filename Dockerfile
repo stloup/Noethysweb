@@ -12,10 +12,20 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copie et installation forcée des paquets compatibles avec Django 3.2
-COPY ./requirements.txt .
-RUN pip install --no-cache-dir django==3.2.25 django-debug-toolbar==3.8.1 django-q2==1.6.2 django-autocomplete-light==3.9.4 psycopg2-binary==2.9.9 gunicorn==21.2.0
-RUN pip install --no-cache-dir -r ./requirements.txt
+# Installation groupée et figée de TOUTES les extensions nécessaires
+RUN pip install --no-cache-dir \
+    "django>=3.2,<4.0" \
+    "django-autocomplete-light==3.9.4" \
+    "django-crispy-forms>=1.14.0,<2.0" \
+    "django-debug-toolbar>=3.2,<4.0" \
+    "django-extensions>=3.1.5" \
+    "django-import-export>=2.8.0,<3.0" \
+    "django-q2>=1.6.2" \
+    "django-datatable-view-compat==0.8.7" \
+    "django-select2>=7.10.0" \
+    "pillow>=10.0.0" \
+    "psycopg2-binary>=2.9.3" \
+    "gunicorn>=21.2.0"
 
 # Copie de tout le code source
 COPY . .
