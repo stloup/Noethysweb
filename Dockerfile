@@ -26,6 +26,7 @@ RUN pip install --no-cache-dir \
     "django-summernote>=0.8.20.0" \
     "django-colorfield>=0.6.3" \
     "django-js-asset>=2.0" \
+    "django-anymail>=8.0" \
     "pillow>=10.0.0" \
     "psycopg2-binary>=2.9.3" \
     "gunicorn>=21.2.0"
