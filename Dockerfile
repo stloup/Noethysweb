@@ -32,6 +32,7 @@ RUN pip install --no-cache-dir \
     "django-simple-captcha>=0.5.17" \
     "django-bootstrap4>=22.3" \
     "django-mathfilters>=1.0.0" \
+    "django-upload-form>=1.0.0" \
     "requests>=2.28.0" \
     "pillow>=10.0.0" \
     "psycopg2-binary>=2.9.3" \
