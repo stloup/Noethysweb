@@ -1,22 +1,53 @@
-FROM python:3.9-slim
+FROM python:3.12
 
-# Configuration d'environnement
-ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=noethysweb.settings
+RUN apt-get update && \
+    apt-get install -y cron supervisor && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN python -m pip install gunicorn
 
 WORKDIR /usr/src/app
 
-# Dépendances système minimales
-RUN apt-get update && apt-get install -y \
-    gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+COPY ./requirements.txt .
 
-# Copie de tout le code source d'abord
+RUN pip install psycopg2
+RUN pip3 install -r ./requirements.txt
+
+RUN cat <<'EOF' > /etc/supervisor/conf.d/supervisord.conf
+[supervisord]
+nodaemon=true
+logfile=/dev/null
+logfile_maxbytes=0
+
+[program:cron]
+command=/usr/sbin/cron -f
+autostart=true
+autorestart=true
+stdout_logfile=/dev/fd/1
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/fd/2
+stderr_logfile_maxbytes=0
+
+[program:app]
+command=gunicorn noethysweb.wsgi --bind 0.0.0.0:80
+directory=/usr/src/app/noethysweb
+autostart=true
+autorestart=true
+stdout_logfile=/dev/fd/1
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/fd/2
+stderr_logfile_maxbytes=0
+EOF
+
 COPY . .
 
+
 WORKDIR /usr/src/app/noethysweb
+
+# make sur it is executable so that we can easily manage a running instance like this:
+# docker exec noethysweb ./manage.py import_defaut
 RUN chmod +x ./manage.py
 
-# Commande de démarrage avec l'ajout de django-resized
-CMD ["/bin/bash", "-c", "pip install --no-cache-dir 'django>=3.2,<4.0' django-autocomplete-light==3.9.4 'django-crispy-forms>=1.14.0,<2.0' 'django-debug-toolbar>=3.2,<4.0' 'django-extensions>=3.1.5' 'django-import-export>=2.8.0,<3.0' 'django-q2>=1.6.2' django-datatable-view-compat==0.8.7 'django-select2>=7.10.0' 'django-summernote>=0.8.20.0' 'django-colorfield>=0.6.3' 'django-js-asset>=2.0' 'django-anymail>=8.0' 'django-formtools>=2.3' 'django-axes>=5.0,<6.0' 'django-simple-captcha>=0.5.17' 'django-bootstrap4>=22.3' 'django-mathfilters>=1.0.0' 'django-upload-form==0.5.0' 'django-dbbackup>=4.0' django-crontab django-cleanup django-resized 'requests>=2.28.0' 'pillow>=10.0.0' 'psycopg2-binary>=2.9.3' 'gunicorn>=21.2.0' && ./manage.py collectstatic --noinput && ./manage.py migrate && python -c \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'votre_mot_de_passe')\" && gunicorn noethysweb.wsgi --bind 0.0.0.0:10000"]
+RUN ./manage.py collectstatic
+
+CMD ["/bin/bash", "-c", "./manage.py migrate && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
