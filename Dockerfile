@@ -28,6 +28,7 @@ RUN pip install --no-cache-dir \
     "django-js-asset>=2.0" \
     "django-anymail>=8.0" \
     "django-formtools>=2.3" \
+    "django-axes>=5.0,<6.0" \
     "pillow>=10.0.0" \
     "psycopg2-binary>=2.9.3" \
     "gunicorn>=21.2.0"
